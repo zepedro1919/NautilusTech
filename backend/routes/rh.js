@@ -32,7 +32,7 @@ router.post('/rh/reservations', async (req, res) => {
         const conflict = await pool.query(conflictQuery, [roomId, date, startTime, endTime]);
 
         if (conflict.rows.length > 0) {
-            return res.status(409).json({ 
+            return res.status(409).json({
                 success: false, 
                 message: "Esta sala já tem reserva para esta data e hora." 
             });
@@ -61,7 +61,9 @@ router.post('/rh/reservations', async (req, res) => {
             if (userEmail) {
                 // B. Configure Transporter
                 const transporter = nodemailer.createTransport({
-                    service: 'gmail', // Or use 'host' and 'port' for other providers
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true, // Use SSL
                     auth: {
                         user: process.env.EMAIL_USER,
                         pass: process.env.EMAIL_PASS
@@ -88,9 +90,9 @@ router.post('/rh/reservations', async (req, res) => {
                     `
                 };
 
-                // D. Send
-                await transporter.sendMail(mailOptions);
-                console.log(`Email enviado para ${userEmail}`);
+                // D. Send - Don't await this, let it run in background so user doesn't wait
+                transporter.sendMail(mailOptions).catch(err => console.error("Erro envio assíncrono:", err));
+                console.log(`A enviar email para ${userEmail}...`);
             }
         } catch (emailError) {
             // We log the error but DO NOT fail the request. 
