@@ -1,9 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
-import logo from '../../public/nautilus_tech_logo.png';
+import logo from '/nautilus_tech_logo.png';
+import api from '../api';
 import './Login.css';
-
-const apiUrl = import.meta.env.VITE_API_URL;
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -18,7 +16,7 @@ const Login = ({ onLogin }) => {
 
     try {
       // Replace URL with your deployed backend URL later
-      const res = await axios.post(`${apiUrl}/api/login`, {
+      const res = await api.post('/api/login', {
         username,
         password
       });
