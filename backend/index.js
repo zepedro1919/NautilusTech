@@ -1,7 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const app = express();
@@ -17,43 +15,16 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// LOGIN ROUTE
-app.post('/api/login', async (req, res) => {
-  const { username, password } = req.body;
+// Routes
+const loginRoute = require('./routes/login');
+const rhroute = require('./routes/rh');
 
-  try {
-    // 1. Check if user exists
-    const userQuery = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
-    
-    if (userQuery.rows.length === 0) {
-      return res.status(401).json({ error: "Utilizador não encontrado" });
-    }
+app.use('/api', loginRoute);
+app.use('/api', rhroute);
 
-    const user = userQuery.rows[0];
-
-    // 2. Check Password (SIMPLE COMPARISON for now, as per your request)
-    // Note: In production, use bcrypt.compare(password, user.password)
-    if (password !== user.password) {
-      return res.status(401).json({ error: "Password incorreta" });
-    }
-
-    // 3. Generate Token
-    const token = jwt.sign({ id: user.id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-    res.json({
-      success: true,
-      token,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email
-      }
-    });
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
+// Root Route
+app.get('/', (req, res) => {
+  res.send('Backend is running!');
 });
 
 const PORT = process.env.PORT || 5000;
