@@ -59,6 +59,8 @@ router.post('/rh/reservations', async (req, res) => {
             const roomName = roomRes.rows[0]?.name;
 
             if (userEmail) {
+                console.log(`[DEBUG] Configuring email transport. User: ${process.env.EMAIL_USER ? 'Set' : 'Not Set'}`);
+
                 // B. Configure Transporter
                 const transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
@@ -72,7 +74,18 @@ router.post('/rh/reservations', async (req, res) => {
                         rejectUnauthorized: false
                     },
                     // Force IPv4 to avoid IPv6 timeouts in cloud environments
-                    family: 4
+                    family: 4,
+                    logger: true, // Log info to console
+                    debug: true   // Include SMTP traffic in logs
+                });
+
+                // Verify connection configuration
+                transporter.verify(function (error, success) {
+                    if (error) {
+                        console.error("[DEBUG] Transporter verification failed:", error);
+                    } else {
+                        console.log("[DEBUG] SMTP Server is ready to take our messages");
+                    }
                 });
 
                 // C. Define Email Content
@@ -93,8 +106,19 @@ router.post('/rh/reservations', async (req, res) => {
                 };
 
                 // D. Send - Don't await this, let it run in background so user doesn't wait
-                transporter.sendMail(mailOptions).catch(err => console.error("Erro envio assíncrono:", err));
-                console.log(`A enviar email para ${userEmail}...`);
+                console.log(`[DEBUG] Attempting to send email to ${userEmail}...`);
+                transporter.sendMail(mailOptions)
+                    .then(info => {
+                        console.log(`[SUCCESS] Email enviado para ${userEmail}`);
+                        console.log("[DEBUG] Message ID:", info.messageId);
+                        console.log("[DEBUG] Response:", info.response);
+                    })
+                    .catch(err => {
+                        console.error("[ERROR] Erro envio assíncrono:", err);
+                        if (err.code === 'ETIMEDOUT') {
+                            console.error("[ERROR] Connection timed out. Check firewall rules or port blocking.");
+                        }
+                    });
             }
         } catch (emailError) {
             // We log the error but DO NOT fail the request. 
