@@ -1,9 +1,14 @@
 import React from 'react';
 import './Sidebar.css'; // We will create this css below
 
-const Sidebar = ({ user, activeModule, setActiveModule }) => {
+const Sidebar = ({ user, activeModule, setActiveModule, isOpen, onClose }) => {
   return (
-    <div className="sidebar">
+    <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+      <div className='sidebar-header'>
+        {/* Close button for mobile */}
+        <button className='close-sidebar-btn' onClick={onClose}>&times;</button>
+      </div>
+
       <div className="user-profile">
         <div className="avatar-circle">
           {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
@@ -21,8 +26,6 @@ const Sidebar = ({ user, activeModule, setActiveModule }) => {
         >
           Recursos Humanos
         </button>
-        {/* Future modules go here */}
-        <button className="nav-item disabled">Financeiro (Em breve)</button>
       </nav>
     </div>
   );

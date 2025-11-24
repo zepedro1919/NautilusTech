@@ -86,6 +86,7 @@
   flex-direction: column;
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
   z-index: 10;
+  box-sizing: border-box; /* Fixes the overflow issue */
 }
 
 .event-time {
@@ -95,4 +96,53 @@
 
 .event-user {
   font-weight: bold;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 10px;
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: stretch;
+  }
+  
+  .room-selector {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .room-selector select {
+    width: 100%;
+  }
+
+  .week-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .week-nav span {
+    font-size: 0.9em;
+    font-weight: bold;
+  }
+
+  .time-column {
+    width: 40px; /* Smaller time column */
+  }
+  
+  .time-label {
+    font-size: 10px;
+    padding-right: 5px;
+  }
+
+  .day-column {
+    min-width: 0;
+  }
 }

@@ -5,6 +5,45 @@
   display: flex;
   flex-direction: column;
   padding: 20px;
+  transition: transform 0.3s ease-in-out;
+  z-index: 100;
+}
+
+.sidebar-header {
+  display:  none;  /* Hidden on desktop */
+  justify-content:  flex-end;
+  margin-bottom: 10px;
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS (< 768px)
+   ========================================= */
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 280px;
+    transform: translateX(-100%); /* Hide off-screen by default */
+    box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+  }
+
+  .sidebar.open {
+    transform: translateX(0); /* Slide in */
+  }
+
+  .sidebar-header {
+    display: flex; /* Show close button */
+  }
+}
+
+.close-sidebar-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
 }
 
 .user-profile {

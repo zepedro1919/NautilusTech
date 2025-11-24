@@ -7,6 +7,15 @@ const RoomCalendar = () => {
   const [selectedRoom, setSelectedRoom] = useState('');
   const [reservations, setReservations] = useState([]);
   const [currentWeekStart, setCurrentWeekStart] = useState(getMonday(new Date()));
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [mobileDayIndex, setMobileDayIndex] = useState(0); // 0-4 (Mon-Fri)
+
+  // Handle Resize
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Helper: Get Monday of the provided date's week
   function getMonday(d) {
@@ -63,8 +72,30 @@ const RoomCalendar = () => {
   const prevWeek = () => setCurrentWeekStart(addDays(currentWeekStart, -7));
   const nextWeek = () => setCurrentWeekStart(addDays(currentWeekStart, 7));
 
+  // Mobile Navigation
+  const prevDay = () => {
+    if (mobileDayIndex > 0) {
+      setMobileDayIndex(mobileDayIndex - 1);
+    } else {
+      prevWeek();
+      setMobileDayIndex(4); // Go to Friday of previous week
+    }
+  };
+
+  const nextDay = () => {
+    if (mobileDayIndex < 4) {
+      setMobileDayIndex(mobileDayIndex + 1);
+    } else {
+      nextWeek();
+      setMobileDayIndex(0); // Go to Monday of next week
+    }
+  };
+
   // Render Logic
-  const weekDays = Array.from({ length: 5 }, (_, i) => addDays(currentWeekStart, i));
+  const weekDays = isMobile 
+    ? [addDays(currentWeekStart, mobileDayIndex)] 
+    : Array.from({ length: 5 }, (_, i) => addDays(currentWeekStart, i));
+
   const startHour = 8; // Calendar starts at 8:00
   const endHour = 19;  // Calendar ends at 19:00
   const hourHeight = 60; // 60px per hour
@@ -80,7 +111,7 @@ const RoomCalendar = () => {
     const top = (startDecimal - startHour) * hourHeight;
     const height = (endDecimal - startDecimal) * hourHeight;
 
-    return { top: `${top}px`, height: `${height}px` };
+    return { top: `${top}px`, height: `${height - 2}px` };
   };
 
   return (
@@ -93,11 +124,20 @@ const RoomCalendar = () => {
             {rooms.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
           </select>
         </div>
-        <div className="week-nav">
-          <button onClick={prevWeek}>&lt; Anterior</button>
-          <span>{formatDate(currentWeekStart)} a {formatDate(addDays(currentWeekStart, 4))}</span>
-          <button onClick={nextWeek}>Próxima &gt;</button>
-        </div>
+        
+        {isMobile ? (
+          <div className="week-nav mobile-nav">
+            <button onClick={prevDay}>&lt;</button>
+            <span>{weekDays[0].toLocaleDateString('pt-PT', { weekday: 'short', day: 'numeric' })}</span>
+            <button onClick={nextDay}>&gt;</button>
+          </div>
+        ) : (
+          <div className="week-nav">
+            <button onClick={prevWeek}>&lt; Anterior</button>
+            <span>{formatDate(currentWeekStart)} a {formatDate(addDays(currentWeekStart, 4))}</span>
+            <button onClick={nextWeek}>Próxima &gt;</button>
+          </div>
+        )}
       </div>
 
       {/* Calendar Grid */}
