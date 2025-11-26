@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import logo from '/nautilus_tech_logo.png';
 import api from '../api';
-import './Login.css';
+import './login.css';
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
