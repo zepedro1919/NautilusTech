@@ -34,7 +34,7 @@ router.post('/login', async (req, res) => {
     
     // Check if user is admin (belongs to RH or Administração)
     const isAdmin = userDepartments.some(dept => 
-      dept === 'RH' || dept === 'Administração'
+      dept === 'Recursos Humanos' || dept === 'Administração'
     );
 
     // 4. Check Module Access

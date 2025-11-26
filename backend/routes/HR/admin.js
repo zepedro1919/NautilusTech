@@ -32,8 +32,8 @@ const isAdmin = async (req, res, next) => {
         const userDepartments = departmentsQuery.rows.map(d => d.name);
         
         // Check if user belongs to RH or Administração
-        const isAdminUser = userDepartments.some(dept => 
-            dept === 'RH' || dept === 'Administração' || dept === 'HR' || dept === 'Administration'
+        const isAdminUser = userDepartments.some(dept =>
+            dept === 'Recursos Humanos' || dept === 'Administração'
         );
 
         if (!isAdminUser) {
