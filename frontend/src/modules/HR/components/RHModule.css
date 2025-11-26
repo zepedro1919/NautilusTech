@@ -1,0 +1,12 @@
+.rh-module {
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .rh-module {
+    padding: 0.5rem;
+  }
+}

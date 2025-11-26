@@ -4,8 +4,9 @@
 */
 
 import { useState } from 'react';
-import Login from '../Login/Login';
-import Dashboard from '../Dashboard/Dashboard';
+import Login from '../core/auth/login';
+import HRDashboard from '../modules/HR/HRDashboard';
+import SalesDashboard from '../modules/Sales/SalesDashboard';
 import './App.css';
 
 function App() {
@@ -15,7 +16,15 @@ function App() {
   // For now, simple state
   
   if (user) {
-    return <Dashboard user={user} onLogout={() => setUser(null)} />;
+    // Route to appropriate dashboard based on selected module
+    if (user.module === 'HR') {
+      return <HRDashboard user={user} onLogout={() => setUser(null)} />;
+    } else if (user.module === 'SALES') {
+      return <SalesDashboard user={user} onLogout={() => setUser(null)} />;
+    } else if (user.module === 'PRODUCTION') {
+      // Placeholder for Production module (similar to Sales)
+      return <SalesDashboard user={user} onLogout={() => setUser(null)} />;
+    }
   }
 
   return <Login onLogin={(userData) => setUser(userData)} />;

@@ -11,7 +11,25 @@
   flex: 1;
   padding: 30px;
   overflow-y: auto;
-  width: 100%;      /* Ensure it takes full width */
+  width: 100%;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.sidebar-open {
+  margin-left: 250px;
+}
+
+.main-content.sidebar-closed {
+  margin-left: 70px;
+}
+
+.module-display {
+  width: 100%;
+  height: calc(100vh - 120px);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .top-bar {
@@ -46,6 +64,13 @@
   border: none;
   border-radius: 6px;
   flex-shrink: 0; /* Prevent button from shrinking */
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s;
+}
+
+.logout-btn-small:hover {
+  background-color: #c0392b;
 }
 
 /* Hambuerguer button - Hidden on desktop */
@@ -88,23 +113,58 @@
   }
 
   .main-content {
-    padding: 15px;  /* Less padding on mobile */
+    padding: 15px;
+    margin-left: 0 !important;
   }
 
   .top-bar h1 {
     font-size: 1.2rem;  /* Smaller title */
   }
 
-  /* Adjust RH Module Tabs for mobile */
-  .rh-tabs {
-    display: flex;
-    flex-direction: column; /* Stack tabs vertically */
-    gap: 10px;
+  .module-display {
+    height: calc(100vh - 100px);
   }
-  
-  .rh-tabs button {
-    width: 100%;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
+}
+/* Tablet devices */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .main-content {
+    padding: 20px;
+  }
+
+  .top-bar h1 {
+    font-size: 1.4rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 10px;
+  }
+
+  .top-bar {
+    margin-bottom: 10px;
+  }
+
+  .top-bar h1 {
+    font-size: 1rem;
+  }
+
+  .header-left {
+    gap: 8px;
+  }
+
+  .logout-btn-small {
+    padding: 5px 10px;
+    min-width: 50px;
+    font-size: 0.8rem;
+  }
+
+  .mobile-menu-btn {
+    font-size: 22px;
+  }
+
+  .module-display {
+    height: calc(100vh - 80px);
   }
 }

@@ -8,18 +8,18 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['logo.png'], // Ensure your logo is cached
+      includeAssets: ['logo.png', 'sw-push.js'],
       manifest: {
         name: 'Nautilus Tech',
         short_name: 'Nautilus',
         description: 'Plataforma de Gestão Interna',
         theme_color: '#ffffff',
         background_color: '#ffffff',
-        display: 'standalone', // This removes the browser URL bar
+        display: 'standalone',
         orientation: 'portrait',
         icons: [
           {
-            src: 'logo.png', // You must have this file in public/ folder
+            src: 'logo.png',
             sizes: '192x192',
             type: 'image/png'
           },
@@ -29,6 +29,10 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
+      },
+      workbox: {
+        // Import custom push handler
+        importScripts: ['/sw-push.js']
       }
     })
   ],

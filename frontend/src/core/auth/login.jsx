@@ -6,6 +6,7 @@ import './Login.css';
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [selectedModule, setSelectedModule] = useState('HR');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -18,7 +19,8 @@ const Login = ({ onLogin }) => {
       // Replace URL with your deployed backend URL later
       const res = await api.post('/api/login', {
         username,
-        password
+        password,
+        module: selectedModule
       });
       
       if (res.data.success) {
@@ -36,6 +38,18 @@ const Login = ({ onLogin }) => {
       <div className="login-box">
         <img src={logo} alt="Nautilus Tech Logo" />
         <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Módulo</label>
+            <select 
+              value={selectedModule}
+              onChange={(e) => setSelectedModule(e.target.value)}
+              className="module-select"
+            >
+              <option value="HR">NAUTILUS HR</option>
+              <option value="SALES" disabled>NAUTILUS SALES (em breve)</option>
+              <option value="PRODUCTION" disabled>NAUTILUS PRODUCTION (em breve)</option>
+            </select>
+          </div>
           <div className="form-group">
             <label>Username</label>
             <input 
@@ -56,6 +70,7 @@ const Login = ({ onLogin }) => {
           </div>
           {error && <p className="error">{error}</p>}
           <button type="submit" disabled={loading}>
+            {loading && <span className="button-spinner"></span>}
             {loading ? 'A entrar...' : 'Entrar'}
           </button>
         </form>
