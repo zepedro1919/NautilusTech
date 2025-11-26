@@ -16,11 +16,19 @@ app.use(cors({
 app.use(express.json());
 
 // Routes
-const loginRoute = require('./routes/login');
-const rhroute = require('./routes/rh');
+const loginRoute = require('./routes/auth');
+const roomsRoute = require('./routes/HR/rooms');
+const chatRoute = require('./routes/HR/chat');
+const adminRoute = require('./routes/HR/admin');
+const formsRoute = require('./routes/HR/forms');
+const pushRoute = require('./routes/push');
 
 app.use('/api', loginRoute);
-app.use('/api', rhroute);
+app.use('/api', roomsRoute);
+app.use('/api', chatRoute);
+app.use('/api', adminRoute);
+app.use('/api', formsRoute);
+app.use('/api', pushRoute);
 
 // Root Route
 app.get('/', (req, res) => {
