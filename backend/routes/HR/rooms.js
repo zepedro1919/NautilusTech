@@ -2,7 +2,7 @@ const router = require('express').Router();
 const pool = require('../../db');
 require('dotenv').config();
 
-router.get('/rh/rooms', async (req, res) => {
+router.get('/hr/rooms', async (req, res) => {
     try {
         const allRooms = await pool.query("SELECT * FROM rooms ORDER BY name ASC");
         res.json(allRooms.rows);    // returns id, name
@@ -12,7 +12,7 @@ router.get('/rh/rooms', async (req, res) => {
     }
 });
 
-router.post('/rh/reservations', async (req, res) => {
+router.post('/hr/reservations', async (req, res) => {
     const { userId, roomId, date, startTime, endTime, description } = req.body;
 
     try {
@@ -58,7 +58,7 @@ router.post('/rh/reservations', async (req, res) => {
     }
 });
 
-router.get('/rh/reservations', async (req, res) => {
+router.get('/hr/reservations', async (req, res) => {
     const { roomId, startDate, endDate } = req.query;
     try {
         // We JOIN with Users table to get the name of the person who booked
@@ -81,7 +81,7 @@ router.get('/rh/reservations', async (req, res) => {
     }
 });
 
-router.delete('/rh/reservations/:id', async (req, res) => {
+router.delete('/hr/reservations/:id', async (req, res) => {
     const { id } = req.params;
     
     try {
