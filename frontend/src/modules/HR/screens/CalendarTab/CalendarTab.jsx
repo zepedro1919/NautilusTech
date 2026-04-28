@@ -3,6 +3,13 @@ import api from '../../../../core/api';
 import { Spinner } from '../../../../core/components/Loading/Loading';
 import './CalendarTab.css';
 
+const formatLocalDate = (date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
 const CalendarTab = ({ user }) => {
   const [rooms, setRooms] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState('');
@@ -23,7 +30,7 @@ const CalendarTab = ({ user }) => {
 
   const fetchRooms = async () => {
     try {
-      const res = await api.get('/api/rh/rooms');
+      const res = await api.get('/api/hr/rooms');
       setRooms(res.data);
       if (res.data.length > 0) {
         setSelectedRoom(res.data[0].id);
@@ -37,13 +44,11 @@ const CalendarTab = ({ user }) => {
     if (!selectedRoom) return;
 
     setLoading(true);
-    const startDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1)
-      .toISOString().split('T')[0];
-    const endDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0)
-      .toISOString().split('T')[0];
+    const startDate = formatLocalDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1));
+    const endDate = formatLocalDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0));
 
     try {
-      const res = await api.get(`/api/rh/reservations?roomId=${selectedRoom}&startDate=${startDate}&endDate=${endDate}`);
+      const res = await api.get(`/api/hr/reservations?roomId=${selectedRoom}&startDate=${startDate}&endDate=${endDate}`);
       setReservations(res.data);
     } catch (err) {
       console.error('Erro ao carregar reservas:', err);
@@ -58,7 +63,7 @@ const CalendarTab = ({ user }) => {
     }
 
     try {
-      await api.delete(`/api/rh/reservations/${reservationId}`);
+      await api.delete(`/api/hr/reservations/${reservationId}`);
       setReservations(reservations.filter(r => r.id !== reservationId));
     } catch (err) {
       alert('Erro ao cancelar reserva: ' + (err.response?.data?.message || 'Erro desconhecido'));
@@ -88,7 +93,9 @@ const CalendarTab = ({ user }) => {
   const reservationsByDate = useMemo(() => {
     const map = {};
     reservations.forEach(r => {
-      const dateKey = r.reservation_date.split('T')[0];
+      // Backend may return reservation_date as 'YYYY-MM-DD' or as an ISO string.
+      // First 10 chars give the calendar date regardless of any time/zone suffix.
+      const dateKey = String(r.reservation_date).slice(0, 10);
       if (!map[dateKey]) map[dateKey] = [];
       map[dateKey].push(r);
     });
@@ -97,8 +104,7 @@ const CalendarTab = ({ user }) => {
 
   const getReservationsForDay = useCallback((day) => {
     if (!day) return [];
-    const dateStr = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day)
-      .toISOString().split('T')[0];
+    const dateStr = formatLocalDate(new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day));
     return reservationsByDate[dateStr] || [];
   }, [currentMonth, reservationsByDate]);
 

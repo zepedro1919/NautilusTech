@@ -21,7 +21,7 @@ const ReservationTab = ({ user }) => {
   const fetchRooms = async () => {
     setLoadingRooms(true);
     try {
-      const res = await api.get('/api/rh/rooms');
+      const res = await api.get('/api/hr/rooms');
       setRooms(res.data);
       if (res.data.length > 0) {
         setSelectedRoom(res.data[0].id);
@@ -53,7 +53,7 @@ const ReservationTab = ({ user }) => {
     }
 
     try {
-      const res = await api.post('/api/rh/reservations', {
+      const res = await api.post('/api/hr/reservations', {
         userId: user.id,
         roomId: selectedRoom,
         date: date,
@@ -78,8 +78,9 @@ const ReservationTab = ({ user }) => {
     }
   };
 
-  // Get today's date for min attribute
-  const today = new Date().toISOString().split('T')[0];
+  // Get today's date for min attribute (local time, not UTC)
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
   if (loadingRooms) {
     return (
